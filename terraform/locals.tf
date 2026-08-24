@@ -16,7 +16,11 @@ locals {
 
 
   key_vault_name = substr(
-    replace("${local.name_prefix}-kv", "-", ""),
+    replace(
+      "${local.name_prefix}-${substr(var.subscription_id, 0, 8)}-kv",
+      "-",
+      ""
+    ),
     0,
     24
   )

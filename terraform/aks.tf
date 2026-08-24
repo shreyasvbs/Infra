@@ -49,9 +49,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     max_pods = 50
 
     zones = [
-      "1",
-      "2",
-      "3"
+      "1"
     ]
 
     node_labels = {

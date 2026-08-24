@@ -8,8 +8,6 @@ resource "azurerm_kubernetes_cluster_node_pool" "user" {
 
   mode = "User"
 
-  type = "VirtualMachineScaleSets"
-
   vnet_subnet_id = azurerm_subnet.aks.id
 
   auto_scaling_enabled = true

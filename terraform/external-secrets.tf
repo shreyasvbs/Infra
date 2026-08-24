@@ -32,11 +32,9 @@ resource "helm_release" "external_secrets" {
 
         annotations = {
 
-          "azure.workload.identity/client-id" =
-            azurerm_user_assigned_identity.eso.client_id
+          "azure.workload.identity/client-id" = azurerm_user_assigned_identity.eso.client_id
 
-          "azure.workload.identity/tenant-id" =
-            var.tenant_id
+          "azure.workload.identity/tenant-id" = var.tenant_id
         }
       }
 

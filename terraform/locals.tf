@@ -22,12 +22,10 @@ locals {
   )
 
 
-  workload_identity_name =
-    "${local.name_prefix}-eso-identity"
+  workload_identity_name = "${local.name_prefix}-eso-identity"
 
 
-  federated_identity_name =
-    "${local.name_prefix}-eso-federated"
+  federated_identity_name = "${local.name_prefix}-eso-federated"
 
 
   common_tags = merge(

@@ -2,8 +2,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "user" {
 
   name = "user"
 
-  kubernetes_cluster_id =
-    azurerm_kubernetes_cluster.aks.id
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
 
   vm_size = var.user_node_vm_size
 

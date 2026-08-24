@@ -129,7 +129,7 @@ variable "key_vault_secret_names" {
 
   default = {
     database-password = "change-me"
-    api-key            = "change-me"
+    api-key           = "change-me"
   }
 }
 

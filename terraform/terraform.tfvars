@@ -9,18 +9,18 @@ environment = "dev"
 project_name = "platform"
 
 
-system_node_vm_size = "Standard_D4s_v5"
+system_node_vm_size = "Standard_D2s_v5"
 
-user_node_vm_size = "Standard_D4s_v5"
+user_node_vm_size = "Standard_D2s_v5"
 
 
-system_node_min_count = 2
+system_node_min_count = 1
 
-system_node_max_count = 3
+system_node_max_count = 1
 
-user_node_min_count = 2
+user_node_min_count = 1
 
-user_node_max_count = 5
+user_node_max_count = 1
 
 
 admin_group_object_ids = [

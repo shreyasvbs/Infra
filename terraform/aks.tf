@@ -36,7 +36,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
     vnet_subnet_id = azurerm_subnet.aks.id
 
-    enable_auto_scaling = true
+    auto_scaling_enabled = true
 
     min_count = var.system_node_min_count
 
@@ -147,7 +147,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   # AUTO UPGRADE
   ############################################################
 
-  automatic_channel_upgrade = "patch"
+  automatic_upgrade_channel = "patch"
 
 
   ############################################################

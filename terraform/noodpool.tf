@@ -12,7 +12,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "user" {
 
   vnet_subnet_id = azurerm_subnet.aks.id
 
-  enable_auto_scaling = true
+  auto_scaling_enabled = true
 
   min_count = var.user_node_min_count
 

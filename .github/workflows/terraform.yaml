@@ -33,6 +33,8 @@ jobs:
 
       - name: Install kubelogin
         uses: Azure/use-kubelogin@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3

@@ -10,6 +10,6 @@ COPY server.js .
 
 EXPOSE 8080
 
-USER node
+USER 1000
 
 CMD ["node", "server.js"]

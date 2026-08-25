@@ -63,6 +63,10 @@ spec:
               mountPath: /mnt/secrets-store
               readOnly: true
 
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
@@ -74,7 +78,3 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: {{ include "backend.fullname" . }}-kv
-
-          securityContext:
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true

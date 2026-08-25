@@ -1,0 +1,78 @@
+name: Package and Deploy Helm Chart
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - three-tier-helm/**
+      - .github/workflows/deploy-helm.yaml
+  workflow_run:
+    workflows:
+      - Build and Push Images
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AZURE_RESOURCE_GROUP: platform-dev-rg
+  AKS_CLUSTER_NAME: platform-dev-aks
+  HELM_RELEASE_NAME: three-tier-app
+  HELM_NAMESPACE: three-tier-app
+
+jobs:
+  package-and-deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+
+      - name: Package Helm chart
+        working-directory: three-tier-helm
+        run: |
+          helm dependency build
+          helm lint .
+          mkdir -p ../artifacts
+          helm package . --destination ../artifacts --version "1.0.${GITHUB_RUN_NUMBER}"
+
+      - name: Upload Helm chart artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: three-tier-helm-${{ github.sha }}
+          path: artifacts/*.tgz
+          if-no-files-found: error
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --name "$AKS_CLUSTER_NAME" \
+            --admin \
+            --overwrite-existing
+
+      - name: Deploy Helm chart
+        working-directory: three-tier-helm
+        run: |
+          helm upgrade --install "$HELM_RELEASE_NAME" . \
+            --namespace "$HELM_NAMESPACE" \
+            --create-namespace \
+            --wait \
+            --timeout 10m \
+            --atomic

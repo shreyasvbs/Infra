@@ -1,0 +1,30 @@
+enabled: true
+
+image:
+  repository: postgres
+  tag: "16"
+
+service:
+  port: 5432
+
+resources:
+
+  requests:
+    cpu: "250m"
+    memory: "256Mi"
+
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+
+persistence:
+
+  enabled: true
+
+  storageClass: managed-csi
+
+  size: 20Gi
+
+serviceAccount:
+  create: true
+  name: postgresql

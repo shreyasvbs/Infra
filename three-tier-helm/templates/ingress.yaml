@@ -1,0 +1,67 @@
+{{- if .Values.global.ingress.enabled }}
+
+apiVersion: networking.k8s.io/v1
+
+kind: Ingress
+
+metadata:
+
+  name: {{ include "three-tier-app.fullname" . }}
+
+  annotations:
+
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+
+spec:
+
+  ingressClassName: {{ .Values.global.ingress.className }}
+
+  rules:
+
+    - host: {{ .Values.global.ingress.host }}
+
+      http:
+
+        paths:
+
+          {{- if .Values.frontend.enabled }}
+
+          - path: {{ include "three-tier-app.ingress.frontendPath" . }}
+
+            pathType: Prefix
+
+            backend:
+
+              service:
+
+                name: {{ include "three-tier-app.frontendService" . }}
+
+                port:
+
+                  number: {{ .Values.frontend.service.port }}
+
+          {{- end }}
+
+          {{- if .Values.backend.enabled }}
+
+          - path: {{ include "three-tier-app.ingress.backendPath" . }}
+
+            pathType: Prefix
+
+            backend:
+
+              service:
+
+                name: {{ include "three-tier-app.backendService" . }}
+
+                port:
+
+                  number: {{ .Values.backend.service.port }}
+
+          {{- end }}
+
+{{- end }}

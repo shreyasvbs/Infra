@@ -1,0 +1,22 @@
+replicaCount: 2
+
+image:
+  repository: myacr.azurecr.io/frontend
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+service:
+  port: 80
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+serviceAccount:
+  create: true
+  name: frontend

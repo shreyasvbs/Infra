@@ -16,10 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
 
-    env:
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-
     defaults:
       run:
         working-directory: terraform
@@ -28,28 +24,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create OIDC token file
-        run: |
-          export AZURE_FEDERATED_TOKEN_FILE="$RUNNER_TEMP/azure-federated-token"
-          echo "AZURE_FEDERATED_TOKEN_FILE=$AZURE_FEDERATED_TOKEN_FILE" >> "$GITHUB_ENV"
-          curl --fail --silent --show-error \
-            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" \
-            | jq -r '.value' > "$AZURE_FEDERATED_TOKEN_FILE"
-          test -s "$AZURE_FEDERATED_TOKEN_FILE"
-          chmod 600 "$AZURE_FEDERATED_TOKEN_FILE"
-
       - name: Azure login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Install kubelogin
-        uses: Azure/use-kubelogin@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3

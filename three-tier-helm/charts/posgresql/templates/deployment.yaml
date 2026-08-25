@@ -59,6 +59,9 @@ spec:
                   name: {{ .Release.Name }}-postgresql-secrets
                   key: postgres-password
 
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+
           volumeMounts:
 
             - name: postgres-data

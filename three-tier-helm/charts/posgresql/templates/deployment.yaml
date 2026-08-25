@@ -25,6 +25,7 @@ spec:
       labels:
         app.kubernetes.io/name: postgresql
         app.kubernetes.io/instance: {{ .Release.Name }}
+        azure.workload.identity/use: "true"
 
     spec:
 
@@ -63,10 +64,21 @@ spec:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
 
+            - name: keyvault-secrets
+              mountPath: /mnt/secrets-store
+              readOnly: true
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
       volumes:
+
+        - name: keyvault-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ .Release.Name }}-postgresql-kv
 
         - name: postgres-data
 

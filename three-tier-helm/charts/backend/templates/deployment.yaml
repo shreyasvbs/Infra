@@ -57,8 +57,23 @@ spec:
                   name: {{ include "backend.fullname" . }}-secrets
                   key: database-url
 
+          volumeMounts:
+
+            - name: keyvault-secrets
+              mountPath: /mnt/secrets-store
+              readOnly: true
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
+      volumes:
+
+        - name: keyvault-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ include "backend.fullname" . }}-kv
 
           securityContext:
             allowPrivilegeEscalation: false

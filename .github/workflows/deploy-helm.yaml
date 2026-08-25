@@ -67,6 +67,17 @@ jobs:
             --admin \
             --overwrite-existing
 
+      - name: Read workload identity settings
+        id: settings
+        run: |
+          echo "client_id=$(az identity show \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --name platform-dev-eso-identity \
+            --query clientId --output tsv)" >> "$GITHUB_OUTPUT"
+          echo "key_vault_name=$(az keyvault list \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --query '[0].name' --output tsv)" >> "$GITHUB_OUTPUT"
+
       - name: Deploy Helm chart
         working-directory: three-tier-helm
         run: |
@@ -75,4 +86,10 @@ jobs:
             --create-namespace \
             --wait \
             --timeout 10m \
-            --atomic
+            --rollback-on-failure \
+            --set-string global.workloadIdentity.clientId="${{ steps.settings.outputs.client_id }}" \
+            --set-string global.workloadIdentity.tenantId="${{ secrets.AZURE_TENANT_ID }}" \
+            --set-string global.workloadIdentity.keyVaultName="${{ steps.settings.outputs.key_vault_name }}" \
+            --set-string backend.workloadIdentity.clientId="${{ steps.settings.outputs.client_id }}" \
+            --set-string backend.workloadIdentity.tenantId="${{ secrets.AZURE_TENANT_ID }}" \
+            --set-string backend.workloadIdentity.keyVaultName="${{ steps.settings.outputs.key_vault_name }}"

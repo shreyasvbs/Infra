@@ -78,6 +78,24 @@ jobs:
             --wait \
             --timeout 10m
 
+      - name: Allow ingress NodePorts in AKS NSG
+        run: |
+          NSG_NAME=$(az network nsg list \
+            --resource-group "MC_${AZURE_RESOURCE_GROUP}_${AKS_CLUSTER_NAME}_centralindia" \
+            --query '[0].name' --output tsv)
+          az network nsg rule create \
+            --resource-group "MC_${AZURE_RESOURCE_GROUP}_${AKS_CLUSTER_NAME}_centralindia" \
+            --nsg-name "$NSG_NAME" \
+            --name allow-ingress-nginx-nodeports \
+            --priority 510 \
+            --direction Inbound \
+            --access Allow \
+            --protocol Tcp \
+            --source-address-prefixes Internet \
+            --source-port-ranges '*' \
+            --destination-address-prefixes '*' \
+            --destination-port-ranges 31349 31188
+
       - name: Read workload identity settings
         id: settings
         run: |

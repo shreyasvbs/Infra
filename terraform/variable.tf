@@ -128,6 +128,9 @@ variable "key_vault_secret_names" {
   type        = map(string)
 
   default = {
+    postgres-username = "postgres"
+    postgres-password = "change-me"
+    database-url      = "postgresql://postgres:change-me@three-tier-app-postgresql:5432/applicationdb"
     database-password = "change-me"
     api-key           = "change-me"
   }

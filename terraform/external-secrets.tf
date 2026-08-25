@@ -58,6 +58,8 @@ resource "helm_release" "external_secrets" {
 
     azurerm_role_assignment.eso_keyvault,
 
-    azurerm_role_assignment.github_aks_admin
+    azurerm_role_assignment.github_aks_admin,
+
+    azurerm_key_vault_secret.secrets
   ]
 }

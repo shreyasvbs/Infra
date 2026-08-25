@@ -18,3 +18,19 @@ resource "azurerm_key_vault" "aks" {
 
   tags = local.common_tags
 }
+
+
+resource "azurerm_key_vault_secret" "secrets" {
+
+  for_each = var.key_vault_secret_names
+
+  name = each.key
+
+  value = each.value
+
+  key_vault_id = azurerm_key_vault.aks.id
+
+  depends_on = [
+    azurerm_role_assignment.eso_keyvault
+  ]
+}

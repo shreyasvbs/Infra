@@ -1,0 +1,137 @@
+global:
+  nameOverride: ""
+  fullnameOverride: ""
+
+  imagePullSecrets: []
+
+  ingress:
+    enabled: true
+    className: nginx
+
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+      nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+
+    host: app.example.com
+
+    paths:
+      frontend: /
+      backend: /api
+
+  workloadIdentity:
+    enabled: true
+
+    clientId: ""
+
+    tenantId: ""
+
+    keyVaultName: ""
+
+    keyVaultSecretObjects:
+      - name: postgres-username
+        type: secret
+        objectName: postgres-username
+
+      - name: postgres-password
+        type: secret
+        objectName: postgres-password
+
+      - name: database-url
+        type: secret
+        objectName: database-url
+
+
+# ----------------------------------------------------
+# Frontend
+# ----------------------------------------------------
+
+frontend:
+  enabled: true
+
+  replicaCount: 2
+
+  image:
+    repository: myacr321012.azurecr.io/frontend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+
+  service:
+    port: 80
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+  serviceAccount:
+    create: true
+    name: frontend
+
+
+# ----------------------------------------------------
+# Backend
+# ----------------------------------------------------
+
+backend:
+  enabled: true
+
+  replicaCount: 2
+
+  image:
+    repository: myacr321012.azurecr.io/backend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+
+  service:
+    port: 8080
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+  serviceAccount:
+    create: true
+    name: backend
+
+
+# ----------------------------------------------------
+# PostgreSQL
+# ----------------------------------------------------
+
+postgresql:
+  enabled: true
+
+  image:
+    repository: postgres
+    tag: "16"
+
+  service:
+    port: 5432
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+
+    limits:
+      cpu: "1"
+      memory: "1Gi"
+
+  persistence:
+    enabled: true
+    storageClass: managed-csi
+    size: 20Gi
+
+  serviceAccount:
+    create: true
+    name: postgresql

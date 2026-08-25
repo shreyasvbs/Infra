@@ -82,3 +82,21 @@ resource "azurerm_role_assignment" "github_aks_admin" {
 
   principal_id = data.azurerm_client_config.current.object_id
 }
+
+
+data "azurerm_container_registry" "acr" {
+
+  name = "myacr321012"
+
+  resource_group_name = "rg-terraform-aks"
+}
+
+
+resource "azurerm_role_assignment" "aks_acr_pull" {
+
+  scope = data.azurerm_container_registry.acr.id
+
+  role_definition_name = "AcrPull"
+
+  principal_id = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
+}

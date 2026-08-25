@@ -28,6 +28,42 @@ resource "azurerm_federated_identity_credential" "eso" {
 }
 
 
+resource "azurerm_federated_identity_credential" "backend" {
+
+  name = "${local.federated_identity_name}-backend"
+
+  resource_group_name = azurerm_resource_group.aks.name
+
+  parent_id = azurerm_user_assigned_identity.eso.id
+
+  audience = [
+    "api://AzureADTokenExchange"
+  ]
+
+  issuer = azurerm_kubernetes_cluster.aks.oidc_issuer_url
+
+  subject = "system:serviceaccount:three-tier-app:backend"
+}
+
+
+resource "azurerm_federated_identity_credential" "postgresql" {
+
+  name = "${local.federated_identity_name}-postgresql"
+
+  resource_group_name = azurerm_resource_group.aks.name
+
+  parent_id = azurerm_user_assigned_identity.eso.id
+
+  audience = [
+    "api://AzureADTokenExchange"
+  ]
+
+  issuer = azurerm_kubernetes_cluster.aks.oidc_issuer_url
+
+  subject = "system:serviceaccount:three-tier-app:postgresql"
+}
+
+
 resource "azurerm_role_assignment" "eso_keyvault" {
 
   scope = azurerm_key_vault.aks.id

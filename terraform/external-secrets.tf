@@ -52,6 +52,10 @@ resource "helm_release" "external_secrets" {
 
     azurerm_federated_identity_credential.eso,
 
+    azurerm_federated_identity_credential.backend,
+
+    azurerm_federated_identity_credential.postgresql,
+
     azurerm_role_assignment.eso_keyvault,
 
     azurerm_role_assignment.github_aks_admin

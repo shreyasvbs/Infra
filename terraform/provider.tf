@@ -22,7 +22,7 @@ provider "kubernetes" {
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "kubelogin"
-    args        = ["get-token", "--login", "azurecli"]
+    args        = ["get-token", "--login", "workloadidentity"]
   }
 }
 
@@ -40,7 +40,7 @@ provider "helm" {
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
       command     = "kubelogin"
-      args        = ["get-token", "--login", "azurecli"]
+      args        = ["get-token", "--login", "workloadidentity"]
     }
   }
 }
